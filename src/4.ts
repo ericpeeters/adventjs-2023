@@ -4,7 +4,12 @@ function decode(message: string): string {
     closing?: RegExpMatchArray;
   };
 
-  const parenMatches = Array.from(message.matchAll(/[(|)]/g));
+  function reverseString(str: string): string {
+    return str.split("").reverse().join("");
+  }
+
+  const parenthesisRegExp = /[(|)]/g;
+  const parenMatches = Array.from(message.matchAll(parenthesisRegExp));
   const parenPairs: ParenPair[] = [];
   let prevChar: string | undefined;
 
@@ -28,21 +33,24 @@ function decode(message: string): string {
     prevChar = char;
   });
 
-  parenPairs.forEach((pair: ParenPair) => {
+  parenPairs.toReversed().forEach((pair: ParenPair) => {
     const betweenParens = message.substring(
       pair.opening.index + 1,
       pair.closing.index
     );
+    const reversed = reverseString(betweenParens);
 
-    console.log(betweenParens);
+    console.log({ betweenParens, reversed });
+
+    message = message.replace(betweenParens, reversed);
   });
 
-  return "";
+  return message.replaceAll(parenthesisRegExp, "");
 }
 
 console.log(decode("hola (odnum)") === "hola mundo");
-// console.log("hola (odnum):", decode("hola (odnum)"));
-// console.log(decode("(olleh) (dlrow)!") === "hello world!");
+console.log("hola (odnum):", decode("hola (odnum)"));
+console.log(decode("(olleh) (dlrow)!") === "hello world!");
 console.log("(olleh) (dlrow)!:", decode("(olleh) (dlrow)!"));
-// console.log(decode("sa(u(cla)atn)s") === "santaclaus");
-// console.log("sa(u(cla)atn)s:", decode("sa(u(cla)atn)s"));
+console.log(decode("sa(u(cla)atn)s") === "santaclaus");
+console.log("sa(u(cla)atn)s:", decode("sa(u(cla)atn)s"));
