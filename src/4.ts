@@ -33,7 +33,7 @@ function decode(message: string): string {
     prevChar = char;
   });
 
-  parenPairs.toReversed().forEach((pair: ParenPair) => {
+  parenPairs.reverse().forEach((pair: ParenPair) => {
     const betweenParens = message.substring(
       pair.opening.index + 1,
       pair.closing.index
