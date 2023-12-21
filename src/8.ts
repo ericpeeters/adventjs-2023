@@ -25,7 +25,7 @@ function organizeGifts(gifts: string): string {
       [
         `[${symbol}]`.repeat(pallets),
         `{${symbol}}`.repeat(boxes),
-        `(${symbol.repeat(leftOvers)})`,
+        leftOvers ? `(${symbol.repeat(leftOvers)})` : "",
       ].join("")
     );
   }, "");
