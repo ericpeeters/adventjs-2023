@@ -4,40 +4,69 @@ function drawGift(size: number, symbol: string): string {
     end: "\n",
   };
 
-  // The easiest case is when size is 1,
-  // since we don't have to calculate anything
   if (size === 1) {
     return `${legend.padding}${legend.end}`;
   }
 
-  Array(size - 1).reduce((drawingAroundCenter, index) => {
-    const spacingBefore = size - index + 1;
-  }, "");
+  const symbolAmount = size - 2;
+  const startAndEnd = " ".repeat(size - 1) + "#".repeat(size);
+  const drawingUntilCenter: string[] = Array(size - 2)
+    .fill("")
+    .reduce((drawing: string[], _, index) => {
+      const whiteSpaceBefore = " ".repeat(size - (index + 2));
+      const start = `${drawing}${whiteSpaceBefore}${
+        legend.padding
+      }${symbol.repeat(symbolAmount)}`;
+      const paddingAmountAfterStart = index === 0 ? 2 : 1;
+      const symbolsAfterPadding = symbol.repeat(index);
+      const finalPadding = index > 0 ? legend.padding : "";
 
-  const spacing = Array(size).join(" ");
-  const start = `${spacing}${legend.padding.repeat(size)}`;
+      drawing.push(
+        `${start}${legend.padding.repeat(
+          paddingAmountAfterStart
+        )}${symbolsAfterPadding}${finalPadding}${legend.end}`
+      );
 
-  return start;
+      return drawing;
+    }, []);
+  const center = `${legend.padding.repeat(size)}${symbol.repeat(symbolAmount)}${
+    legend.padding
+  }`;
+  const drawingAfterCenter = [...drawingUntilCenter]
+    .reverse()
+    .map((line) => line.replaceAll(" ", ""));
+
+  const finalDrawing = [
+    startAndEnd,
+    drawingUntilCenter,
+    center,
+    drawingAfterCenter,
+    startAndEnd.replaceAll(" ", ""),
+  ];
+
+  return finalDrawing.flat().join("\n");
 }
 
-console.log({
-  drawing: drawGift(4, "+"),
-  testCase:
-    drawGift(3, "+") ===
-    `   ####
-       #++##
-      #++#+#
-     ####++#
-     #++#+#
-     #++##
-     ####\n`,
-});
+// console.log({
+//   drawing: drawGift(4, "+"),
+//   testCase:
+//     drawGift(4, "+") ===
+//     `
+//         ####
+//        #++##
+//       #++#+#
+//      ####++#
+//      #++#+#
+//      #++##
+//      ####\n`,
+// });
 
 console.log({
-  drawing: drawGift(5, "*"),
+  // drawing: drawGift(5, "*"),
   testCase:
     drawGift(5, "*") ===
-    `    #####
+    `
+         #####
         #***##
        #***#*#
       #***#**#
@@ -48,7 +77,7 @@ console.log({
      #####\n`,
 });
 
-console.log({
-  drawing: drawGift(1, "^"),
-  testCase: drawGift(1, "+") === `#\n`,
-});
+// console.log({
+//   drawing: drawGift(1, "^"),
+//   testCase: drawGift(1, "+") === `#\n`,
+// });
